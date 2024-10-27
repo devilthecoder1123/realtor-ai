@@ -1,4 +1,4 @@
-#NavBar with Draggable Menu Items
+#NavBar with Draggable Menu Items.
 This project implements a navigation bar component in React that allows users to dynamically add and reorder menu items using drag-and-drop functionality.
 
 Table of Contents
