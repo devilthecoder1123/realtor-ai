@@ -6,10 +6,6 @@ This project implements a navigation bar component in React that allows users to
 
 - [Features](#features)
 - [Installation](#installation)
-- [Usage](#usage)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
