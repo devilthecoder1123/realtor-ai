@@ -1,13 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
 import DynamicForm from "./DynamicForm";  // Adjust the path according to your file structure
+import { Stack } from "@mui/material";
+import CustomizedSteppers from "./CustomizedSteppers";
+import HorizontalStepper from "./HorizontalSteppers";
 
 // Define the structure of form data
 interface FormData {
@@ -27,6 +26,9 @@ const verticalSteps = [
     "Add Requirements",
     "Property Location",
     "Property Features",
+    "Area",
+    "Price",
+    "Photos",
 ];
 
 // Define the structure for each field configuration
@@ -59,6 +61,18 @@ const stepFields: FieldConfig[][] = [
     [
         { type: "text", label: "Property Features", placeHolder: "Eg:features", name: "features" },
     ],
+    // Step 4: Area
+    [
+        { type: "text", label: "Area", placeHolder: "Eg:Area", name: "area" },
+    ],
+    // Step 5: Price
+    [
+        { type: "text", label: "Price", placeHolder: "Eg:500000", name: "price" },
+    ],
+    // Step 6: Photos
+    [
+        { type: "text", label: "Photos", placeHolder: "Eg:Photos", name: "photos" },
+    ],
 ];
 
 export default function VerticalHorizontalSteppers() {
@@ -76,10 +90,12 @@ export default function VerticalHorizontalSteppers() {
 
     const handleVerticalNext = () => {
         setActiveVerticalStep((prev) => Math.min(prev + 1, verticalSteps.length - 1));
+        setActiveHorizontalStep((prev) => prev + 1);
     };
 
     const handleVerticalBack = () => {
         setActiveVerticalStep((prev) => Math.max(prev - 1, 0));
+        setActiveHorizontalStep((prev) => prev - 1);
     };
 
     return (
@@ -88,13 +104,7 @@ export default function VerticalHorizontalSteppers() {
                 <Grid container item xs={12}>
                     <Grid item xs={3} mt={5}>
                         {/* Vertical Stepper */}
-                        <Stepper activeStep={activeVerticalStep} orientation="vertical">
-                            {verticalSteps.map((step) => (
-                                <Step key={step}>
-                                    <StepLabel>{step}</StepLabel>
-                                </Step>
-                            ))}
-                        </Stepper>
+                        <CustomizedSteppers activeVerticalStep={activeVerticalStep} verticalSteps={verticalSteps} />
                     </Grid>
                     <Grid item xs={9}>
                         {/* Paper with elevation, containing Horizontal Stepper and the form */}
@@ -102,47 +112,40 @@ export default function VerticalHorizontalSteppers() {
                             {/* Horizontal Stepper */}
                             <Box ml={4} display="flex" flexDirection="column">
                                 <Box>
-                                    <Stepper activeStep={activeHorizontalStep} alternativeLabel>
-                                        {horizontalSteps.map((label) => (
-                                            <Step key={label}>
-                                                <StepLabel>{label}</StepLabel>
-                                            </Step>
-                                        ))}
-                                    </Stepper>
+                                    <HorizontalStepper activeStep={activeHorizontalStep} steps={horizontalSteps} />
                                 </Box>
 
 
                                 {/* Form rendering below the horizontal stepper */}
-                                <Box p={2} sx={{ mt: 4, border: "2px solid blue", borderRadius: '8px' }}>
-                                    <Typography variant="h6" gutterBottom>
-                                        {verticalSteps[activeVerticalStep]}
-                                    </Typography>
-                                    <Box display='flex' flexDirection="column" alignItems='center'>
+                                <Box p={2} sx={{ mt: 4, border: "2px solid blue", borderRadius: '8px' }} display='flex' flexDirection="column">
+                                    <Box display='flex' flexDirection="column" alignItems="center" width="100%" >
                                         <DynamicForm
+                                            activeVerticalStep={activeVerticalStep}
+                                            verticalSteps={verticalSteps}
                                             fields={stepFields[activeVerticalStep]}
                                             formData={formData}
                                             onChange={handleFormChange}
                                         />
-                                        <Box sx={{ mt: 2 }}>
-                                            <Button
-                                                variant="contained"
-                                                onClick={handleVerticalNext}
-                                                sx={{ mr: 1 }}
-                                                disabled={activeVerticalStep === verticalSteps.length - 1}
-                                            >
-                                                {activeVerticalStep === verticalSteps.length - 1 ? "Finish" : "Next"}
-                                            </Button>
-                                            {
-                                                activeVerticalStep > 0 && (
+                                        <Box sx={{ mt: 2, width: '100%', display: 'flex', justifyContent: 'flex-end' }} maxWidth={420}>
+                                            <Stack direction='row' spacing={2}>
+                                                {activeVerticalStep > 0 && (
                                                     <Button
                                                         variant="contained"
+                                                        sx={{ bgcolor: ' #C62828', }}
                                                         onClick={handleVerticalBack}
                                                     >
-                                                        Back
+                                                        Previous
                                                     </Button>
-                                                )
-                                            }
-
+                                                )}
+                                                <Button
+                                                    variant="contained"
+                                                    onClick={handleVerticalNext}
+                                                    sx={{ mr: 1, bgcolor: ' #C62828', }}
+                                                    disabled={activeVerticalStep === verticalSteps.length - 1}
+                                                >
+                                                    {activeVerticalStep === verticalSteps.length - 1 ? "Finish" : "Next"}
+                                                </Button>
+                                            </Stack>
                                         </Box>
                                     </Box>
                                 </Box>
@@ -151,6 +154,6 @@ export default function VerticalHorizontalSteppers() {
                     </Grid>
                 </Grid>
             </Grid>
-        </Box>
+        </Box >
     );
 }
